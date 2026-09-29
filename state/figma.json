@@ -1,0 +1,13 @@
+{
+  "file_url": "https://www.figma.com/design/JYklqa0uIK2rjEewngL9yB",
+  "file_key": "JYklqa0uIK2rjEewngL9yB",
+  "plan": "iris crop. (team::1368030625099891023)",
+  "page": { "id": "0:1", "name": "키스크린" },
+  "screens": [
+    { "id": "home", "node_id": "1:2", "size": "390x4017" },
+    { "id": "my-assets", "node_id": "2:2", "size": "390x2909" },
+    { "id": "admin-review", "node_id": "3:2", "size": "390x2895" }
+  ],
+  "variables": { "collection": "harness-tokens", "count": 44 },
+  "published_at": "2026-09-29"
+}
