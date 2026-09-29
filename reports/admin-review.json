@@ -4,8 +4,32 @@
     "G-ref": {
       "pass": true,
       "violations": []
+    },
+    "G-spec": {
+      "pass": true,
+      "violations": []
+    },
+    "G-token": {
+      "pass": true,
+      "violations": []
+    },
+    "G-N1": {
+      "pass": true,
+      "violations": []
+    },
+    "G-N2": {
+      "pass": true,
+      "violations": []
+    },
+    "G1": {
+      "pass": true,
+      "violations": []
+    },
+    "G-field": {
+      "pass": true,
+      "violations": []
     }
   },
-  "updated_at": "2026-09-29T13:42:15.096Z",
+  "updated_at": "2026-09-29T13:59:18.937Z",
   "pass": true
 }

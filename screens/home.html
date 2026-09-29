@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>허들링 · 홈</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+<link rel="stylesheet" href="../system/tokens.css">
+<style>
+/* =========================================================
+   screens/home.html — 컴포넌트 규칙은 system/components.html에서 그대로 복사
+   ========================================================= */
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  letter-spacing: 0;
+}
+svg { display: block; flex-shrink: 0; }
+
+/* ---------- typography ---------- */
+.text-heading-1 { font-size: var(--font-size-heading-1); font-weight: var(--font-weight-bold); line-height: 1.3; }
+.text-heading-3 { font-size: var(--font-size-heading-3); font-weight: var(--font-weight-bold); line-height: 1.35; }
+.text-heading-4 { font-size: var(--font-size-heading-4); font-weight: var(--font-weight-bold); line-height: 1.35; }
+.text-title     { font-size: var(--font-size-title);     font-weight: var(--font-weight-semibold); line-height: var(--line-height-title); }
+.text-body-lg   { font-size: var(--font-size-body-lg);   font-weight: var(--font-weight-light); line-height: var(--line-height-body); }
+.text-body      { font-size: var(--font-size-body);      font-weight: var(--font-weight-regular); line-height: var(--line-height-body); }
+.text-body-sm   { font-size: var(--font-size-body-sm);   font-weight: var(--font-weight-regular); line-height: var(--line-height-body); }
+.text-link      { font-size: var(--font-size-link);      font-weight: var(--font-weight-semibold); line-height: var(--line-height-body); }
+.text-caption   { font-size: var(--font-size-caption);   font-weight: var(--font-weight-regular); line-height: var(--line-height-label); }
+.text-muted { color: var(--color-text-muted); }
+.text-faint { color: var(--color-text-faint); }
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- layout helpers ---------- */
+.stack-4  { display: flex; flex-direction: column; gap: var(--space-xxs); }
+.stack-8  { display: flex; flex-direction: column; gap: var(--space-xs); }
+.stack-12 { display: flex; flex-direction: column; gap: var(--space-sm); }
+.stack-16 { display: flex; flex-direction: column; gap: var(--space-md); }
+.row { display: flex; align-items: center; gap: var(--space-xs); }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); }
+.wrap { flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+
+/* ---------- button-primary / button-outline / button-pill-soft ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xxs);
+  height: 48px; padding: 0 var(--space-md);
+  border: 1px solid transparent; border-radius: var(--radius-full);
+  font-size: var(--font-size-link); font-weight: var(--font-weight-semibold); line-height: var(--line-height-body);
+  white-space: nowrap; cursor: pointer; text-decoration: none;
+}
+.btn--sm { height: 36px; padding: 0 var(--space-sm); font-size: var(--font-size-body-sm); }
+.btn--block { display: flex; width: 100%; }
+.btn:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.button-primary { background: var(--color-primary); color: var(--color-on-primary); }
+.button-outline { background: var(--color-canvas); color: var(--color-ink); border-color: var(--color-hairline); }
+.button-pill-soft { background: var(--color-canvas-soft); color: var(--color-ink); }
+
+/* ---------- link-more ---------- */
+.link-more {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted); background: none; border: 0; padding: 0; cursor: pointer;
+}
+.link-more--ink { color: var(--color-ink); }
+
+/* ---------- card ---------- */
+.card {
+  background: var(--color-canvas); border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-md); padding: var(--space-lg);
+}
+.card--soft { background: var(--color-canvas-soft); border-color: var(--color-canvas-soft); }
+.card-eyebrow { font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--color-text-muted); }
+
+/* ---------- status-chip ---------- */
+.status-chip {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); line-height: var(--line-height-label);
+  background: var(--color-canvas-soft); color: var(--color-ink); border: 1px solid var(--color-canvas-soft);
+  white-space: nowrap;
+}
+.status-chip--outline { background: var(--color-canvas); border-color: var(--color-hairline); color: var(--color-text-muted); }
+.status-chip--ink-outline { background: var(--color-canvas); border-color: var(--color-ink); color: var(--color-ink); }
+.status-chip--ink { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+
+/* ---------- meta-chip / access-badge ---------- */
+.meta-chip {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  background: var(--color-canvas-soft); color: var(--color-text-muted);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); white-space: nowrap;
+}
+.access-badge {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  border: 1px solid var(--color-hairline); background: var(--color-canvas); color: var(--color-ink);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); white-space: nowrap;
+}
+.access-badge--paid { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+
+/* ---------- badge-overlay ---------- */
+.badge-overlay {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  background: var(--color-overlay); color: var(--color-on-primary);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); white-space: nowrap;
+}
+.badge-overlay--icon { width: 24px; padding: 0; justify-content: center; }
+.overlay-tl { position: absolute; top: 8px; left: 8px; }
+.overlay-tr { position: absolute; top: 8px; right: 8px; }
+
+/* ---------- section-header / greeting-header ---------- */
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); }
+.greeting-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-sm); }
+
+/* ---------- app-icon-squircle ---------- */
+.app-icon-squircle {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 48px; height: 48px; border-radius: var(--radius-squircle);
+  background: var(--color-canvas-soft); color: var(--color-ink);
+}
+.app-icon-squircle--32 { width: 32px; height: 32px; }
+.app-icon-squircle--40 { width: 40px; height: 40px; }
+.app-icon-squircle--56 { width: 56px; height: 56px; }
+.app-icon-squircle--ink { background: var(--color-ink); color: var(--color-on-primary); }
+.app-icon-mark { font-size: var(--font-size-title); font-weight: var(--font-weight-bold); }
+
+/* ---------- entry-grid ---------- */
+.entry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md) var(--space-xs); }
+.entry-item {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);
+  padding: 0; background: none; border: 0; cursor: pointer; text-align: center;
+  font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold); color: var(--color-ink);
+}
+.entry-item .badge-overlay { position: absolute; right: 0; bottom: 0; }
+
+/* ---------- progress-bar ---------- */
+.progress-bar { width: 100%; height: 8px; border-radius: var(--radius-full); background: var(--color-canvas-soft); overflow: hidden; }
+.card--soft .progress-bar { background: var(--color-hairline); }
+.progress-bar-fill { height: 100%; border-radius: var(--radius-full); background: var(--color-ink); }
+
+/* ---------- media tile ---------- */
+.media-tile {
+  position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: var(--radius-sm); background: var(--color-canvas-soft);
+  display: flex; align-items: center; justify-content: center; color: var(--color-text-faint);
+}
+
+/* ---------- rail · content-card · skill-card ---------- */
+.rail { display: flex; gap: var(--space-sm); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding-bottom: var(--space-xxs); }
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; flex-shrink: 0; }
+.content-card { width: 240px; display: flex; flex-direction: column; gap: var(--space-sm); }
+.skill-card {
+  width: 200px; display: flex; flex-direction: column; gap: var(--space-sm);
+  padding: var(--space-md); border: 1px solid var(--color-hairline-soft); border-radius: var(--radius-md); background: var(--color-canvas);
+  position: relative;
+}
+.difficulty { display: inline-flex; align-items: center; gap: var(--space-xxs); font-size: var(--font-size-caption); color: var(--color-text-muted); }
+.difficulty-dot { width: 6px; height: 6px; border-radius: var(--radius-circle); background: var(--color-hairline); }
+.difficulty-dot--on { background: var(--color-ink); }
+
+/* ---------- lock-preview-card ---------- */
+.lock-row { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); background: var(--color-canvas); }
+.button-pair { display: flex; gap: var(--space-xs); }
+.button-pair > * { flex: 1; }
+
+/* ---------- list-row · notice-list ---------- */
+.list { display: flex; flex-direction: column; }
+.list-row {
+  display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-hairline-soft);
+}
+.list-row:last-child { border-bottom: 0; }
+.list-row-title { font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-row-meta { font-size: var(--font-size-caption); color: var(--color-text-muted); }
+.notice-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sm); padding: var(--space-md) 0; border-bottom: 1px solid var(--color-hairline-soft); }
+.notice-row:last-child { border-bottom: 0; }
+
+/* ---------- empty-state ---------- */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  border: 1px dashed var(--color-hairline); border-radius: var(--radius-md); background: var(--color-canvas);
+}
+
+/* ---------- upgrade-cta-card ---------- */
+.upgrade-cta-card { display: flex; flex-direction: column; gap: var(--space-md); }
+
+/* ---------- bottom-tab-bar ---------- */
+.bottom-tab-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: var(--space-xs) var(--space-xs) var(--space-lg);
+  background: var(--color-canvas); border-top: 1px solid var(--color-hairline-soft);
+}
+.bottom-tab-bar--fixed { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; }
+.bottom-tab {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-xxs);
+  padding: var(--space-xxs) 0; background: none; border: 0; cursor: pointer;
+  font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold); color: var(--color-text-faint);
+}
+.bottom-tab[aria-current="page"] { color: var(--color-ink); }
+
+/* =========================================================
+   화면 레이아웃 (home 전용)
+   ========================================================= */
+.screen {
+  max-width: 390px; margin: 0 auto;
+  padding: var(--space-lg) var(--space-md) calc(var(--space-section-lg) + var(--space-xl));
+  display: flex; flex-direction: column; gap: var(--space-xl);
+}
+.bottom-tab-bar--fixed { max-width: 390px; margin: 0 auto; }
+.tab-label { display: inline-flex; align-items: center; gap: var(--space-xxs); }
+
+/* 역할·상태별 변형 표시 — 한 화면에 여러 역할을 겹쳐 보여줄 때 어느 역할용인지 캡션으로 알린다 */
+.variant { display: flex; flex-direction: column; gap: var(--space-xxs); }
+[data-note]::before {
+  content: "역할 · " attr(data-note);
+  display: block;
+  font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label); color: var(--color-text-faint);
+}
+[data-state]::before {
+  content: "상태 · " attr(data-state);
+  display: block;
+  font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label); color: var(--color-text-faint);
+}
+</style>
+</head>
+<body>
+<main class="screen">
+
+<!-- S1 · 인사 헤더 -->
+<section data-ref="R1" data-component="greeting-header" class="stack-16">
+  <div class="variant" data-role-only="free paid seller admin" data-note="로그인 회원">
+    <div class="greeting-header">
+      <div class="stack-8">
+        <h1 class="text-heading-1"><span data-field="User.name">보라</span>님,<br>이번 달 미션 절반 왔어요</h1>
+        <p class="text-body-sm text-muted"><span data-field="User.role">판매 승인 회원</span> · 9월 학습 12일째</p>
+      </div>
+      <span class="access-badge access-badge--paid" data-component="access-badge" data-field="User.membership_status">유료</span>
+    </div>
+  </div>
+  <div class="variant" data-role-only="guest" data-note="비회원">
+    <div class="greeting-header">
+      <h1 class="text-heading-1">허들링에서<br>AI 실무를 시작해요</h1>
+    </div>
+  </div>
+</section>
+
+<!-- S2 · 내 학습 진행 요약 -->
+<section data-ref="R1" data-component="progress-summary-card" class="stack-16">
+  <div class="variant" data-role-only="free paid seller admin" data-note="로그인 회원">
+    <article class="card card--soft stack-12" data-component="card">
+      <div class="row-between">
+        <span class="card-eyebrow">내 학습</span>
+        <span class="status-chip status-chip--ink-outline" data-component="status-chip" data-field="Submission.status">작성 중</span>
+      </div>
+      <p class="text-title" data-field="Mission.title">회의록 자동 요약 워크플로 만들기</p>
+      <div class="progress-bar" data-component="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar-fill" style="width: 60%"></div></div>
+      <div class="row-between">
+        <span class="text-caption text-muted">산출물 2/3</span>
+        <a href="#" class="link-more link-more--ink" data-component="link-more">이어서 하기
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+      </div>
+    </article>
+  </div>
+  <div class="variant" data-role-only="guest" data-note="비회원">
+    <div class="empty-state" data-component="empty-state">
+      <span class="app-icon-squircle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span>
+      <p class="text-title">가입하고 내 학습을 시작해요</p>
+      <p class="text-body-sm text-muted">이번 달 미션 진행률과 제출 상태가 여기 모여요</p>
+      <button type="button" class="btn button-pill-soft btn--sm" data-component="button-pill-soft">가입하기</button>
+    </div>
+  </div>
+</section>
+
+<!-- S3 · 입구 그리드 -->
+<section data-ref="R3" data-component="entry-grid">
+  <div class="card" data-component="card">
+    <div class="entry-grid">
+      <a href="#" class="entry-item">
+        <span class="app-icon-squircle app-icon-squircle--56"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h7v15H4zM13 5h7v15h-7z"/></svg></span>무료 학습자료</a>
+      <a href="#" class="entry-item">
+        <span class="app-icon-squircle app-icon-squircle--56"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/></svg>
+          <span class="badge-overlay badge-overlay--icon" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        </span>유료 멤버 자료실</a>
+      <a href="#" class="entry-item">
+        <span class="app-icon-squircle app-icon-squircle--56"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h8M8 14h5"/></svg></span>스킬 라이브러리</a>
+      <a href="#" class="entry-item">
+        <span class="app-icon-squircle app-icon-squircle--56"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          <span class="badge-overlay badge-overlay--icon" data-component="badge-overlay" data-role-only="guest" aria-label="잠김"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        </span>내 학습</a>
+      <a href="#" class="entry-item">
+        <span class="app-icon-squircle app-icon-squircle--56"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>
+          <span class="badge-overlay badge-overlay--icon" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        </span>내 자산</a>
+      <a href="#" class="entry-item" data-role-only="admin">
+        <span class="app-icon-squircle app-icon-squircle--56 app-icon-squircle--ink"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>운영자 검수</a>
+    </div>
+  </div>
+</section>
+
+<!-- S4 · 이번 달 미션 -->
+<section data-ref="R2" data-component="mission-today-card">
+  <article class="card stack-16" data-component="card">
+    <div class="row-between">
+      <span class="card-eyebrow">이번 달 미션</span>
+      <span class="row">
+        <span class="meta-chip" data-component="meta-chip" data-field="Mission.due_date">마감 D-1</span>
+        <span class="access-badge access-badge--paid" data-component="access-badge" data-field="Mission.access_level" data-role-only="free paid seller admin">유료</span>
+      </span>
+    </div>
+    <div class="stack-4">
+      <p class="text-caption text-muted" data-field="Mission.month" data-role-only="free paid seller admin">2026년 9월</p>
+      <h3 class="text-heading-3" data-field="Mission.title">회의록 자동 요약 워크플로 만들기</h3>
+    </div>
+    <ul class="stack-4 text-body-sm text-muted" data-field="Mission.required_outputs" data-role-only="free paid seller admin">
+      <li>· 사용한 프롬프트 1개</li>
+      <li>· 결과 화면 캡처 1장</li>
+      <li>· 3줄 회고</li>
+    </ul>
+    <div class="variant" data-role-only="paid seller admin" data-note="유료 · 판매 승인 · 운영자">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">제출하러 가기</button>
+    </div>
+    <div class="variant" data-role-only="free" data-note="무료 회원 (유료 미션)">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        유료 전환하고 제출하기</button>
+    </div>
+    <div class="variant" data-role-only="guest" data-note="비회원">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">가입하고 참여하기</button>
+    </div>
+  </article>
+</section>
+
+<!-- S5 · 무료 학습자료 -->
+<section data-ref="R4" data-component="free-content-rail" class="stack-12">
+  <div class="section-header" data-component="section-header">
+    <h2 class="text-heading-3">무료 학습자료</h2>
+    <a href="#" class="link-more" data-component="link-more">전체보기
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+  </div>
+  <div class="rail">
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">AI 실무</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">ChatGPT로 주간 보고서 10분 만에 쓰기</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 28일</span>
+          <span class="access-badge" data-component="access-badge" data-field="Content.access_level">무료</span>
+        </div>
+      </div>
+    </article>
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">Figma + AI</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">Figma AI로 와이어프레임 초안 뽑기</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 27일</span>
+          <span class="access-badge" data-component="access-badge" data-field="Content.access_level">무료</span>
+        </div>
+      </div>
+    </article>
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">바이브코딩</span>
+        <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">Cursor로 사내 신청 폼 하루 만에 만들기</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 25일</span>
+          <span class="access-badge access-badge--paid" data-component="access-badge" data-field="Content.access_level">유료</span>
+        </div>
+      </div>
+    </article>
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">자동화</span>
+        <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">메일 분류 자동화 템플릿</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 23일</span>
+          <span class="access-badge access-badge--paid" data-component="access-badge" data-field="Content.access_level">유료</span>
+        </div>
+      </div>
+    </article>
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">콘텐츠 제작</span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">블로그 초안을 카드뉴스로 바꾸는 프롬프트</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 21일</span>
+          <span class="access-badge" data-component="access-badge" data-field="Content.access_level">무료</span>
+        </div>
+      </div>
+    </article>
+    <article class="content-card" data-component="content-card">
+      <div class="media-tile">
+        <span class="badge-overlay overlay-tl" data-component="badge-overlay" data-field="Content.category">1인 사업가 운영</span>
+        <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="stack-4">
+        <p class="text-link clamp-2" data-field="Content.title">견적서·계약서 템플릿 한 번에 정리하기</p>
+        <div class="row-between">
+          <span class="text-caption text-faint" data-field="Content.published_at">9월 19일</span>
+          <span class="access-badge" data-component="access-badge" data-field="Content.access_level">코호트</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- S6 · 유료 멤버 자료실 오늘의 자료 -->
+<section data-ref="R5" data-component="member-content-card" class="stack-12">
+  <div class="section-header" data-component="section-header">
+    <h2 class="text-heading-3">유료 멤버 자료실</h2>
+  </div>
+  <article class="card card--soft stack-12" data-component="card">
+    <div class="row-between">
+      <span class="card-eyebrow">오늘의 자료</span>
+      <span class="text-caption text-muted"><span data-field="Content.updated_at">9월 29일</span> 업데이트</span>
+    </div>
+    <p class="text-heading-4" data-field="Content.title">프롬프트 체이닝으로 리서치 자동화</p>
+    <p class="text-body-sm text-muted clamp-2" data-field="Content.summary">질문을 세 단계로 나눠 이어 붙이면 리서치 초안이 한 번에 나와요. 실제 업무 예시와 함께 따라 해 봐요.</p>
+    <div class="variant" data-role-only="paid seller admin" data-note="유료 · 판매 승인 · 운영자">
+      <div class="button-pair">
+        <button type="button" class="btn button-outline" data-component="button-outline">자료 보기</button>
+        <button type="button" class="btn button-primary" data-component="button-primary">미션 시작</button>
+      </div>
+    </div>
+    <div class="variant" data-role-only="guest free" data-note="비회원 · 무료 회원">
+      <div class="lock-row" data-component="lock-preview-card">
+        <span class="app-icon-squircle app-icon-squircle--32 app-icon-squircle--ink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        <span class="text-body-sm">유료 멤버 전용 자료예요. 요약만 미리 볼 수 있어요</span>
+      </div>
+    </div>
+    <div class="variant" data-role-only="guest" data-note="비회원">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">가입하기</button>
+    </div>
+    <div class="variant" data-role-only="free" data-note="무료 회원">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">유료로 전환하기</button>
+    </div>
+  </article>
+</section>
+
+<!-- S7 · 스킬 라이브러리 -->
+<section data-ref="R4" data-component="skill-card-rail" class="stack-12">
+  <div class="section-header" data-component="section-header">
+    <h2 class="text-heading-3">스킬 라이브러리</h2>
+    <a href="#" class="link-more" data-component="link-more">전체보기
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+  </div>
+  <div class="rail">
+    <article class="skill-card" data-component="skill-card">
+      <span class="app-icon-squircle app-icon-squircle--40 app-icon-squircle--ink"><span class="app-icon-mark">P</span></span>
+      <div class="stack-4">
+        <p class="text-link" data-field="SkillCard.title">회의록 3줄 요약</p>
+        <span class="text-caption text-muted" data-field="SkillCard.category">문서 작성</span>
+      </div>
+      <span class="difficulty" data-field="SkillCard.difficulty" aria-label="난이도 1/3">난이도
+        <span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot"></span><span class="difficulty-dot"></span></span>
+      <div class="row wrap">
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">ChatGPT</span>
+        <span class="access-badge" data-component="access-badge" data-field="SkillCard.access_level">무료</span>
+      </div>
+    </article>
+    <article class="skill-card" data-component="skill-card">
+      <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">A</span></span>
+      <div class="stack-4">
+        <p class="text-link" data-field="SkillCard.title">노션 DB 자동 정리</p>
+        <span class="text-caption text-muted" data-field="SkillCard.category">자동화</span>
+      </div>
+      <span class="difficulty" data-field="SkillCard.difficulty" aria-label="난이도 2/3">난이도
+        <span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot"></span></span>
+      <div class="row wrap">
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">Make</span>
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">Notion</span>
+        <span class="access-badge access-badge--paid" data-component="access-badge" data-field="SkillCard.access_level">유료</span>
+      </div>
+    </article>
+    <article class="skill-card" data-component="skill-card">
+      <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">F</span></span>
+      <div class="stack-4">
+        <p class="text-link" data-field="SkillCard.title">컴포넌트 설명 자동 작성</p>
+        <span class="text-caption text-muted" data-field="SkillCard.category">디자인</span>
+      </div>
+      <span class="difficulty" data-field="SkillCard.difficulty" aria-label="난이도 2/3">난이도
+        <span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot"></span></span>
+      <div class="row wrap">
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">Figma</span>
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">Claude</span>
+        <span class="access-badge access-badge--paid" data-component="access-badge" data-field="SkillCard.access_level">유료</span>
+      </div>
+    </article>
+    <article class="skill-card" data-component="skill-card">
+      <span class="badge-overlay badge-overlay--icon overlay-tr" data-component="badge-overlay" data-role-only="guest free" aria-label="잠김"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">V</span></span>
+      <div class="stack-4">
+        <p class="text-link" data-field="SkillCard.title">랜딩 페이지 한 번에 만들기</p>
+        <span class="text-caption text-muted" data-field="SkillCard.category">바이브코딩</span>
+      </div>
+      <span class="difficulty" data-field="SkillCard.difficulty" aria-label="난이도 3/3">난이도
+        <span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot difficulty-dot--on"></span><span class="difficulty-dot difficulty-dot--on"></span></span>
+      <div class="row wrap">
+        <span class="meta-chip" data-component="meta-chip" data-field="SkillCard.tools">Cursor</span>
+        <span class="access-badge" data-component="access-badge" data-field="SkillCard.access_level">코호트</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- S8 · 내 자산 요약 (guest·free 비노출) -->
+<section data-ref="R2" data-component="my-assets-summary" data-role-only="paid seller admin" data-note="유료 · 판매 승인 · 운영자" class="stack-12">
+  <div class="section-header" data-component="section-header">
+    <h2 class="text-heading-3">내 자산</h2>
+    <a href="#" class="link-more" data-component="link-more">전체보기
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+  </div>
+  <p class="text-caption text-muted" data-role-only="seller">판매 신청한 자산은 검수 상태가 함께 보여요</p>
+  <ul class="list">
+    <li class="list-row" data-component="list-row">
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">P</span></span>
+      <span class="grow stack-4">
+        <span class="list-row-title" data-field="Asset.title">회의록 3줄 요약 프롬프트</span>
+        <span class="list-row-meta"><span data-field="Asset.category">프롬프트</span> · <span data-field="Asset.updated_at">9월 28일</span></span>
+      </span>
+      <span class="status-chip" data-component="status-chip" data-field="Asset.review_status" data-role-only="seller">검수 대기</span>
+    </li>
+    <li class="list-row" data-component="list-row">
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">T</span></span>
+      <span class="grow stack-4">
+        <span class="list-row-title" data-field="Asset.title">메일 분류 자동화 템플릿</span>
+        <span class="list-row-meta"><span data-field="Asset.category">자동화 템플릿</span> · <span data-field="Asset.updated_at">9월 21일</span></span>
+      </span>
+      <span class="status-chip status-chip--ink" data-component="status-chip" data-field="Asset.review_status" data-role-only="seller">승인됨</span>
+    </li>
+    <li class="list-row" data-component="list-row">
+      <span class="app-icon-squircle app-icon-squircle--40"><span class="app-icon-mark">S</span></span>
+      <span class="grow stack-4">
+        <span class="list-row-title" data-field="Asset.title">주간 보고서 초안 스킬 파일</span>
+        <span class="list-row-meta"><span data-field="Asset.category">스킬 파일</span> · <span data-field="Asset.updated_at">9월 17일</span></span>
+      </span>
+      <span class="status-chip status-chip--ink-outline" data-component="status-chip" data-field="Asset.review_status" data-role-only="seller">수정 요청</span>
+    </li>
+  </ul>
+  <div class="variant" data-state="자산이 없을 때">
+    <div class="empty-state" data-component="empty-state">
+      <span class="app-icon-squircle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 14h5l1 2h4l1-2h5"/></svg></span>
+      <p class="text-title">아직 자산이 없어요</p>
+      <p class="text-body-sm text-muted">제출 완료된 미션을 자산으로 옮겨보세요</p>
+    </div>
+  </div>
+</section>
+
+<!-- S9 · 가입 / 유료 전환 CTA (paid·seller·admin 비노출) -->
+<section data-ref="own" data-component="upgrade-cta-card" data-role-only="guest free" data-note="비회원 · 무료 회원" class="stack-8">
+  <div class="card card--soft upgrade-cta-card" data-component="card">
+    <div class="stack-8">
+      <p class="text-heading-3">멤버 자료실과 미션 제출까지</p>
+      <p class="text-body-lg text-muted">가입하면 내 학습 기록이, 유료 멤버가 되면 모든 자료와 스킬 카드가 열려요.</p>
+    </div>
+    <div class="variant" data-role-only="guest" data-note="비회원">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">무료로 가입하기</button>
+    </div>
+    <div class="variant" data-role-only="free" data-note="무료 회원">
+      <button type="button" class="btn button-primary btn--block" data-component="button-primary">유료 멤버십으로 전환하기</button>
+    </div>
+  </div>
+</section>
+
+<!-- S10 · 새 소식 -->
+<section data-ref="R3" data-component="notice-list" class="stack-4">
+  <div class="section-header" data-component="section-header">
+    <h2 class="text-heading-3">새 소식</h2>
+  </div>
+  <ul class="list">
+    <li class="notice-row">
+      <span class="grow stack-4">
+        <span class="text-body" data-field="Content.title">9월 미션 마감 안내</span>
+        <span class="text-caption text-muted" data-field="Content.source">운영자</span>
+      </span>
+      <span class="text-caption text-faint" data-field="Content.published_at">9월 28일</span>
+    </li>
+    <li class="notice-row">
+      <span class="grow stack-4">
+        <span class="text-body" data-field="Content.title">스킬 라이브러리 신규 카드 8종</span>
+        <span class="text-caption text-muted" data-field="Content.source">운영자</span>
+      </span>
+      <span class="text-caption text-faint" data-field="Content.published_at">9월 26일</span>
+    </li>
+    <li class="notice-row">
+      <span class="grow stack-4">
+        <span class="text-body" data-field="Content.title">추석 연휴 운영 안내</span>
+        <span class="text-caption text-muted" data-field="Content.source">운영자</span>
+      </span>
+      <span class="text-caption text-faint" data-field="Content.published_at">9월 22일</span>
+    </li>
+  </ul>
+</section>
+
+<!-- S11 · 하단 탭바 -->
+<section data-ref="R2" data-component="bottom-tab-bar">
+  <nav class="bottom-tab-bar bottom-tab-bar--fixed" data-component="bottom-tab-bar" aria-label="하단 탭">
+    <a href="#" class="bottom-tab" aria-current="page">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9H4z"/></svg>홈</a>
+    <a href="#" class="bottom-tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h6v15H4zM14 5h6v15h-6z"/></svg>자료실</a>
+    <a href="#" class="bottom-tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+      <span class="tab-label">내 학습<svg data-role-only="guest" aria-label="가입 필요" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span></a>
+    <a href="#" class="bottom-tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>
+      <span class="tab-label">내 자산<svg data-role-only="guest" aria-label="가입 필요" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span></a>
+  </nav>
+</section>
+
+</main>
+</body>
+</html>

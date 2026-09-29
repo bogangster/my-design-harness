@@ -1,0 +1,11 @@
+{
+  "id": "system",
+  "gates": {
+    "G-token": {
+      "pass": true,
+      "violations": []
+    }
+  },
+  "updated_at": "2026-09-29T13:51:40.223Z",
+  "pass": true
+}

@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>운영자 검수 · 허들링</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+<link rel="stylesheet" href="../system/tokens.css">
+<style>
+/* =========================================================
+   admin-review — system/components.html 규칙을 그대로 복사해 쓴다.
+   화면 전용 규칙은 맨 아래 "screen" 블록에만 둔다.
+   ========================================================= */
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  letter-spacing: 0;
+}
+svg { display: block; flex-shrink: 0; }
+
+/* ---------- typography ---------- */
+.text-heading-1 { font-size: var(--font-size-heading-1); font-weight: var(--font-weight-bold); line-height: 1.3; }
+.text-heading-2 { font-size: var(--font-size-heading-2); font-weight: var(--font-weight-bold); line-height: 1.35; }
+.text-heading-4 { font-size: var(--font-size-heading-4); font-weight: var(--font-weight-bold); line-height: 1.35; }
+.text-title     { font-size: var(--font-size-title);     font-weight: var(--font-weight-semibold); line-height: var(--line-height-title); }
+.text-body      { font-size: var(--font-size-body);      font-weight: var(--font-weight-regular); line-height: var(--line-height-body); }
+.text-body-sm   { font-size: var(--font-size-body-sm);   font-weight: var(--font-weight-regular); line-height: var(--line-height-body); }
+.text-caption   { font-size: var(--font-size-caption);   font-weight: var(--font-weight-regular); line-height: var(--line-height-label); }
+.text-muted { color: var(--color-text-muted); }
+
+/* ---------- layout helpers ---------- */
+.stack-4  { display: flex; flex-direction: column; gap: var(--space-xxs); }
+.stack-8  { display: flex; flex-direction: column; gap: var(--space-xs); }
+.stack-12 { display: flex; flex-direction: column; gap: var(--space-sm); }
+.stack-16 { display: flex; flex-direction: column; gap: var(--space-md); }
+.row { display: flex; align-items: center; gap: var(--space-xs); }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); }
+.wrap { flex-wrap: wrap; }
+.grow { flex: 1; min-width: 0; }
+
+/* ---------- button-primary / button-outline / button-pill-soft ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xxs);
+  height: 48px; padding: 0 var(--space-md);
+  border: 1px solid transparent; border-radius: var(--radius-full);
+  font-size: var(--font-size-link); font-weight: var(--font-weight-semibold); line-height: var(--line-height-body);
+  white-space: nowrap; cursor: pointer; text-decoration: none;
+}
+.btn--block { display: flex; width: 100%; }
+.btn:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.button-primary { background: var(--color-primary); color: var(--color-on-primary); }
+.button-primary:disabled, .button-primary[aria-disabled="true"] { background: var(--color-hairline); color: var(--color-text-faint); cursor: not-allowed; }
+.button-outline { background: var(--color-canvas); color: var(--color-ink); border-color: var(--color-hairline); }
+.button-outline:disabled { color: var(--color-text-faint); cursor: not-allowed; }
+.button-pill-soft { background: var(--color-canvas-soft); color: var(--color-ink); }
+.button-pill-soft:disabled { color: var(--color-text-faint); cursor: not-allowed; }
+
+/* ---------- icon-button ---------- */
+.icon-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--radius-full);
+  background: var(--color-canvas-soft); color: var(--color-ink); cursor: pointer;
+}
+.icon-button--ghost { background: transparent; }
+.icon-button--sm { width: 32px; height: 32px; }
+
+/* ---------- text-input / text-area ---------- */
+.text-input, .text-area, .select {
+  display: block; width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-field); color: var(--color-ink);
+  border: 0; border-radius: var(--radius-sm);
+  font-size: var(--font-size-body); line-height: var(--line-height-body);
+  outline: none;
+}
+.text-input { height: 48px; }
+.text-input::placeholder, .text-area::placeholder { color: var(--color-text-faint); }
+.text-input:focus, .text-area:focus, .select:focus,
+.text-input-focused { outline: 2px solid var(--color-ink); outline-offset: 0; }
+.text-input:disabled { color: var(--color-text-faint); }
+.text-area { min-height: 128px; resize: vertical; }
+.input-affix { position: relative; }
+.input-affix .text-input { padding-right: var(--space-section); }
+.input-affix-suffix { position: absolute; right: 16px; top: 12px; color: var(--color-text-muted); font-size: var(--font-size-body); }
+
+/* ---------- text-field (label + control + meta) ---------- */
+.text-field { display: flex; flex-direction: column; gap: var(--space-xs); }
+.field-label { font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); color: var(--color-ink); }
+.field-required { color: var(--color-ink); padding-left: var(--space-xxs); }
+.field-meta { display: flex; justify-content: space-between; gap: var(--space-xs); font-size: var(--font-size-caption); color: var(--color-text-muted); }
+.field-counter { color: var(--color-text-faint); margin-left: auto; }
+
+/* ---------- checklist-row (sale-criteria-checklist) ---------- */
+.checklist { display: flex; flex-direction: column; }
+.checklist-row {
+  position: relative; display: flex; align-items: flex-start; gap: var(--space-sm);
+  padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-hairline-soft); cursor: pointer;
+}
+.checklist-row:last-child { border-bottom: 0; }
+.checklist-row input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.check-indicator {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: var(--radius-full);
+  border: 2px solid var(--color-hairline); background: var(--color-canvas); color: transparent;
+}
+.checklist-row input:checked + .check-indicator { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+.checklist-row input:focus-visible + .check-indicator { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.checklist-text { font-size: var(--font-size-body); line-height: var(--line-height-body); }
+.checklist-num { color: var(--color-text-muted); padding-right: var(--space-xxs); }
+
+/* ---------- file-list ---------- */
+.file-list { display: flex; flex-direction: column; gap: var(--space-xs); }
+.file-item {
+  display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); background: var(--color-canvas-soft);
+}
+.file-item-name { font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- card ---------- */
+.card {
+  background: var(--color-canvas); border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-md); padding: var(--space-lg);
+}
+
+/* ---------- status-chip (단색 — 의미 색 없음) ---------- */
+.status-chip {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); line-height: var(--line-height-label);
+  background: var(--color-canvas-soft); color: var(--color-ink); border: 1px solid var(--color-canvas-soft);
+  white-space: nowrap;
+}
+.status-chip--outline { background: var(--color-canvas); border-color: var(--color-hairline); color: var(--color-text-muted); }
+.status-chip--ink-outline { background: var(--color-canvas); border-color: var(--color-ink); color: var(--color-ink); }
+.status-chip--ink { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+.status-chip--muted { background: var(--color-canvas-soft); color: var(--color-text-muted); }
+
+/* ---------- meta-chip / access-badge ---------- */
+.meta-chip {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  background: var(--color-canvas-soft); color: var(--color-text-muted);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); white-space: nowrap;
+}
+.access-badge {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-full);
+  border: 1px solid var(--color-hairline); background: var(--color-canvas); color: var(--color-ink);
+  font-size: var(--font-size-label); font-weight: var(--font-weight-semibold); white-space: nowrap;
+}
+
+/* ---------- filter-chip / status-filter / suggestion-chip ---------- */
+.chip-row { display: flex; gap: var(--space-xs); overflow-x: auto; scrollbar-width: none; padding-bottom: var(--space-xxs); }
+.chip-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 36px; padding: 0 var(--space-md); border-radius: var(--radius-full);
+  border: 1px solid var(--color-hairline); background: var(--color-canvas); color: var(--color-ink);
+  font-size: var(--font-size-body-sm); font-weight: var(--font-weight-semibold); cursor: pointer; white-space: nowrap;
+}
+.filter-chip[aria-pressed="true"] { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+.filter-chip-count { font-weight: var(--font-weight-regular); }
+.suggestion-chip {
+  display: inline-flex; align-items: center; gap: var(--space-xxs);
+  height: 32px; padding: 0 var(--space-sm); border-radius: var(--radius-full);
+  border: 1px dashed var(--color-hairline); background: var(--color-canvas-soft); color: var(--color-ink);
+  font-size: var(--font-size-body-sm); font-weight: var(--font-weight-regular); cursor: pointer; white-space: nowrap;
+}
+
+/* ---------- top-bar / page-header / section-header / list-count ---------- */
+.top-bar { display: flex; align-items: center; gap: var(--space-xs); height: 56px; }
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-sm); padding: var(--space-md) 0; }
+.page-header-count { font-size: var(--font-size-body-sm); color: var(--color-text-muted); }
+.page-header-count strong { color: var(--color-ink); font-weight: var(--font-weight-bold); }
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); }
+.list-count { font-size: var(--font-size-body-sm); color: var(--color-text-muted); }
+.list-count strong { color: var(--color-ink); font-weight: var(--font-weight-bold); }
+
+/* ---------- app-icon-squircle ---------- */
+.app-icon-squircle {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 48px; height: 48px; border-radius: var(--radius-squircle);
+  background: var(--color-canvas-soft); color: var(--color-ink);
+}
+
+/* ---------- media tile ---------- */
+.media-tile {
+  position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: var(--radius-sm); background: var(--color-canvas-soft);
+  display: flex; align-items: center; justify-content: center; color: var(--color-text-faint);
+}
+.media-tile--wide { aspect-ratio: 16 / 10; }
+
+/* ---------- button-pair ---------- */
+.button-pair { display: flex; gap: var(--space-xs); }
+.button-pair > * { flex: 1; }
+
+/* ---------- list-row ---------- */
+.list { display: flex; flex-direction: column; }
+.list-row-title { font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-row-meta { font-size: var(--font-size-caption); color: var(--color-text-muted); }
+
+/* ---------- empty-state ---------- */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-sm); text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  border: 1px dashed var(--color-hairline); border-radius: var(--radius-md); background: var(--color-canvas);
+}
+
+/* ---------- bottom-action-bar / decision-actions ---------- */
+.bottom-action-bar {
+  display: flex; gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md) var(--space-lg);
+  background: var(--color-canvas); border-top: 1px solid var(--color-hairline-soft);
+}
+.bottom-action-bar > * { flex: 1; }
+.bottom-action-bar--fixed { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; }
+
+/* ---------- review-queue-list ---------- */
+.queue-row {
+  display: flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-md) 0; border-bottom: 1px solid var(--color-hairline-soft); cursor: pointer;
+}
+.queue-row:last-child { border-bottom: 0; }
+.queue-row-price { font-size: var(--font-size-body); font-weight: var(--font-weight-bold); white-space: nowrap; }
+
+/* ---------- asset-detail-table (key-value) ---------- */
+.kv-table { display: flex; flex-direction: column; }
+.kv-row { display: grid; grid-template-columns: 96px 1fr; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-hairline-soft); }
+.kv-row:last-child { border-bottom: 0; }
+.kv-row dt { font-size: var(--font-size-body-sm); color: var(--color-text-muted); }
+.kv-row dd { font-size: var(--font-size-body); color: var(--color-ink); }
+
+/* ---------- review-timeline ---------- */
+.timeline { display: flex; flex-direction: column; }
+.timeline-step { position: relative; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-sm); padding-bottom: var(--space-lg); }
+.timeline-step:last-child { padding-bottom: 0; }
+.timeline-step::before {
+  content: ""; position: absolute; left: 11px; top: 24px; bottom: 0; width: 2px; background: var(--color-hairline);
+}
+.timeline-step:last-child::before { display: none; }
+.timeline-dot {
+  width: 24px; height: 24px; border-radius: var(--radius-full);
+  border: 2px solid var(--color-hairline); background: var(--color-canvas);
+  display: inline-flex; align-items: center; justify-content: center; color: transparent;
+}
+.timeline-step--done .timeline-dot { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-primary); }
+.timeline-step--current .timeline-dot { border: 6px solid var(--color-ink); }
+.timeline-step--done::before { background: var(--color-ink); }
+.timeline-label { font-size: var(--font-size-body); color: var(--color-text-faint); padding-top: 0; }
+.timeline-step--done .timeline-label { color: var(--color-text-muted); }
+.timeline-step--current .timeline-label { color: var(--color-ink); font-weight: var(--font-weight-bold); }
+
+/* ---------- bottom-sheet ---------- */
+.bottom-sheet {
+  display: flex; flex-direction: column; gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md) var(--space-lg);
+  background: var(--color-canvas); border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.sheet-grabber { width: 40px; height: 4px; margin: 0 auto; border-radius: var(--radius-full); background: var(--color-hairline); }
+
+/* =========================================================
+   screen — admin-review 전용 배치 (토큰 변수만)
+   ========================================================= */
+[hidden] { display: none !important; }
+.screen {
+  display: flex; flex-direction: column; gap: var(--space-md);
+  max-width: 390px; margin: 0 auto;
+  padding: 0 var(--space-md) calc(var(--space-section) + var(--space-section));
+}
+.screen-detail { display: flex; flex-direction: column; gap: var(--space-xl); padding-top: var(--space-xl); }
+.queue-row { position: relative; }
+.queue-link::after { content: ""; position: absolute; inset: 0; }
+.decision-bar { max-width: 390px; margin: 0 auto; }
+.reject-sheet {
+  position: fixed; inset: auto 0 0 0; width: 100%; max-width: 390px;
+  margin: 0 auto; border: 0; color: var(--color-ink);
+}
+.reject-sheet:not(:popover-open) { display: none; }
+.reject-sheet::backdrop { background: var(--color-overlay); }
+</style>
+</head>
+<body>
+<main class="screen" data-role-only="admin">
+
+  <!-- S1 · page-header -->
+  <section data-ref="own" data-component="page-header" data-role-only="admin">
+    <header class="page-header" data-component="page-header">
+      <div class="stack-8">
+        <span class="access-badge" data-component="access-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>운영자 전용
+        </span>
+        <h1 class="text-heading-1">운영자 검수</h1>
+      </div>
+      <span class="page-header-count">검수 대기 <strong>3</strong>건</span>
+    </header>
+  </section>
+
+  <!-- S2 · status-filter -->
+  <section data-ref="R6" data-component="status-filter">
+    <div class="chip-row" role="toolbar" aria-label="검수 상태 필터" data-field="Asset.review_status">
+      <button type="button" class="filter-chip" data-component="filter-chip" aria-pressed="true" value="pending">검수 대기 <span class="filter-chip-count">3</span></button>
+      <button type="button" class="filter-chip" data-component="filter-chip" aria-pressed="false" value="revision_requested">수정 요청 <span class="filter-chip-count">1</span></button>
+      <button type="button" class="filter-chip" data-component="filter-chip" aria-pressed="false" value="approved">승인됨 <span class="filter-chip-count">5</span></button>
+      <button type="button" class="filter-chip" data-component="filter-chip" aria-pressed="false" value="rejected">반려 <span class="filter-chip-count">0</span></button>
+    </div>
+  </section>
+
+  <!-- S3 · review-queue-list -->
+  <section data-ref="R1" data-component="review-queue-list" class="stack-8">
+    <div class="section-header">
+      <h2 class="text-heading-4">검수 대기 목록</h2>
+      <p class="list-count" data-component="list-count">총 <strong>3</strong>건</p>
+    </div>
+    <ul class="list" data-component="review-queue-list">
+      <li class="queue-row" data-component="queue-row" aria-current="true">
+        <span class="grow stack-4">
+          <span class="row"><span class="status-chip" data-component="status-chip" data-field="Asset.review_status">검수 대기</span><span class="text-caption text-muted" data-field="Asset.updated_at">9월 28일</span></span>
+          <a href="#review-detail" class="list-row-title queue-link" data-field="Asset.title">회의록 3줄 요약 프롬프트</a>
+          <span class="list-row-meta"><span data-field="Asset.owner_id"><span data-field="User.name">김허들</span></span> · <span data-field="Asset.category">프롬프트</span></span>
+        </span>
+        <span class="queue-row-price" data-field="Asset.price">29,000원</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </li>
+      <li class="queue-row" data-component="queue-row">
+        <span class="grow stack-4">
+          <span class="row"><span class="status-chip" data-component="status-chip" data-field="Asset.review_status">검수 대기</span><span class="text-caption text-muted" data-field="Asset.updated_at">9월 27일</span></span>
+          <a href="#review-detail" class="list-row-title queue-link" data-field="Asset.title">노션 DB 자동 정리 템플릿</a>
+          <span class="list-row-meta"><span data-field="Asset.owner_id"><span data-field="User.name">박루프</span></span> · <span data-field="Asset.category">자동화 템플릿</span></span>
+        </span>
+        <span class="queue-row-price" data-field="Asset.price">39,000원</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </li>
+      <li class="queue-row" data-component="queue-row">
+        <span class="grow stack-4">
+          <span class="row"><span class="status-chip" data-component="status-chip" data-field="Asset.review_status">검수 대기</span><span class="text-caption text-muted" data-field="Asset.updated_at">9월 26일</span></span>
+          <a href="#review-detail" class="list-row-title queue-link" data-field="Asset.title">채용 공고 초안 스킬 파일</a>
+          <span class="list-row-meta"><span data-field="Asset.owner_id"><span data-field="User.name">이도구</span></span> · <span data-field="Asset.category">스킬 파일</span></span>
+        </span>
+        <span class="queue-row-price" data-field="Asset.price">19,000원</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </li>
+    </ul>
+    <!-- 빈 상태: 검수 대기 0건일 때 목록 대신 노출 -->
+    <div class="empty-state" data-component="empty-state" hidden>
+      <span class="app-icon-squircle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 14h5l1 2h4l1-2h5"/></svg></span>
+      <p class="text-title">검수 대기 중인 판매 신청이 없어요</p>
+      <p class="text-body-sm text-muted">새 신청이 들어오면 여기에 보여요</p>
+    </div>
+  </section>
+
+  <div class="screen-detail" id="review-detail">
+
+    <!-- S4 · asset-preview -->
+    <section data-ref="R2" data-component="asset-preview" class="stack-16">
+      <div class="top-bar" data-component="top-bar">
+        <button type="button" class="icon-button icon-button--ghost" data-component="icon-button" aria-label="검수 대기 목록으로 돌아가기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <span class="text-title">자산 상세</span>
+      </div>
+      <div class="media-tile media-tile--wide" data-field="Asset.preview" role="img" aria-label="회의록 3줄 요약 결과 미리보기">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 5 5 3-3 5 5"/></svg>
+      </div>
+      <div class="row wrap">
+        <span class="meta-chip" data-component="meta-chip" data-field="Asset.category">프롬프트</span>
+        <span class="meta-chip" data-component="meta-chip" data-field="Asset.visibility" data-role-only="admin">판매 신청</span>
+      </div>
+      <div class="stack-8">
+        <h2 class="text-heading-2" data-field="Asset.title">회의록 3줄 요약 프롬프트</h2>
+        <p class="text-body text-muted" data-field="Asset.description">긴 회의록을 결정 사항 · 할 일 · 다음 일정 3줄로 정리해요. 팀 주간 회의에서 4주 동안 써 본 프롬프트예요.</p>
+      </div>
+      <div class="row wrap" data-field="Asset.tags">
+        <span class="meta-chip" data-component="meta-chip">#회의록</span>
+        <span class="meta-chip" data-component="meta-chip">#요약</span>
+        <span class="meta-chip" data-component="meta-chip">#ChatGPT</span>
+      </div>
+      <div class="stack-8">
+        <p class="field-label">첨부 파일 <span class="text-muted">2</span></p>
+        <ul class="file-list" data-field="Asset.files">
+          <li class="file-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>
+            <span class="grow stack-4"><span class="file-item-name">meeting-summary-prompt.md</span><span class="text-caption text-muted">4KB</span></span>
+            <button type="button" class="icon-button icon-button--sm icon-button--ghost" data-component="icon-button" aria-label="meeting-summary-prompt.md 열기">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </li>
+          <li class="file-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>
+            <span class="grow stack-4"><span class="file-item-name">result-example-01.png</span><span class="text-caption text-muted">320KB</span></span>
+            <button type="button" class="icon-button icon-button--sm icon-button--ghost" data-component="icon-button" aria-label="result-example-01.png 열기">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S5 · asset-detail-table -->
+    <section data-ref="R2" data-component="asset-detail-table" class="stack-8">
+      <h3 class="text-heading-4">상세 정보</h3>
+      <dl class="kv-table" data-component="asset-detail-table">
+        <div class="kv-row"><dt>사용 방법</dt><dd data-field="Asset.usage_guide">회의록 전문을 붙여 넣고 실행해요. 참석자 이름은 역할로 바꿔 넣어요</dd></div>
+        <div class="kv-row"><dt>결과 예시</dt><dd data-field="Asset.example_output">3줄 요약 결과 캡처 2장</dd></div>
+        <div class="kv-row"><dt>필요 환경</dt><dd data-field="Asset.requirements">ChatGPT 4o 이상 · 웹 브라우저</dd></div>
+        <div class="kv-row"><dt>제출자</dt><dd><span data-field="User.name">김허들</span> <span class="text-caption text-muted" data-field="Asset.owner_id">회원 번호 1024</span></dd></div>
+        <div class="kv-row"><dt>제출일</dt><dd data-field="Asset.updated_at">2026년 9월 28일</dd></div>
+      </dl>
+    </section>
+
+    <!-- S6 · review-timeline -->
+    <section data-ref="R4" data-component="review-timeline" class="stack-16">
+      <h3 class="text-heading-4">검수 진행 상태</h3>
+      <ol class="timeline" data-component="review-timeline">
+        <li class="timeline-step timeline-step--done">
+          <span class="timeline-dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+          <span class="stack-4"><span class="timeline-label">제출</span><span class="text-caption text-muted">9월 28일</span></span>
+        </li>
+        <li class="timeline-step timeline-step--current">
+          <span class="timeline-dot"></span>
+          <span class="row"><span class="timeline-label">검수 대기</span><span class="status-chip" data-component="status-chip" data-field="Asset.review_status">검수 대기</span></span>
+        </li>
+        <li class="timeline-step">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">승인됨 / 수정 요청 / 반려</span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- S7 · sale-criteria-checklist -->
+    <section data-ref="R3" data-component="sale-criteria-checklist">
+      <div class="card stack-12" data-component="sale-criteria-checklist">
+        <div class="row-between">
+          <h3 class="text-heading-4">판매 기준 체크리스트 (필수)</h3>
+          <span class="status-chip status-chip--outline" data-component="status-chip">6/8</span>
+        </div>
+        <p class="text-body-sm text-muted" id="checklist-hint">8개 항목을 모두 확인해야 승인할 수 있어요</p>
+        <div class="checklist">
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">1</span>실제 업무에 써본 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">2</span>결과 예시가 있는 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">3</span>사용 방법이 명확한 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row">
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">4</span>초보자가 따라할 수 있는 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">5</span>특정 툴/버전/환경 조건이 적혀 있는 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">6</span>개인정보/고객정보/회사기밀이 없는 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row">
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">7</span>저작권 문제가 없는 것</span>
+          </label>
+          <label class="checklist-row" data-component="checklist-row">
+            <input type="checkbox" data-component="checklist-row" checked>
+            <span class="check-indicator"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+            <span class="checklist-text"><span class="checklist-num">8</span>구매자가 바로 써볼 수 있는 것</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- S8 · price-setting -->
+    <section data-ref="R7" data-component="price-setting">
+      <div class="text-field" data-component="text-field" data-role-only="admin">
+        <label class="field-label" for="review-price">판매 가격<span class="field-required">*</span></label>
+        <div class="input-affix">
+          <input id="review-price" type="text" inputmode="numeric" class="text-input" data-component="text-input" data-field="Asset.price" value="29,000" required aria-describedby="review-price-hint">
+          <span class="input-affix-suffix">원</span>
+        </div>
+        <span class="field-meta" id="review-price-hint"><span>제출자 희망가 29,000원 그대로 승인돼요. 바꾸면 그 값으로 확정돼요</span></span>
+      </div>
+    </section>
+
+    <!-- S9 · revision-comment (S10 "수정 요청"으로 펼친 상태) -->
+    <section data-ref="R5" data-component="revision-comment" id="revision-comment" class="stack-12">
+      <label class="text-field" data-component="text-field">
+        <span class="field-label">수정 요청 코멘트<span class="field-required">*</span></span>
+        <textarea class="text-area" data-component="text-area" maxlength="500" placeholder="예: 결과 예시 화면을 1장 이상 추가해 주세요"></textarea>
+        <span class="field-meta"><span>제출자에게 그대로 전달돼요</span><span class="field-counter">0/500</span></span>
+      </label>
+      <div class="stack-8">
+        <p class="text-caption text-muted">체크하지 않은 항목으로 초안 넣기</p>
+        <div class="row wrap">
+          <button type="button" class="suggestion-chip" data-component="suggestion-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>초보자가 따라할 수 있는 것</button>
+          <button type="button" class="suggestion-chip" data-component="suggestion-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>저작권 문제가 없는 것</button>
+        </div>
+      </div>
+      <button type="button" class="btn button-outline btn--block" data-component="button-outline" disabled>수정 요청 보내기</button>
+    </section>
+
+  </div>
+
+  <!-- S10 · decision-actions (하단 고정) -->
+  <section data-ref="R1" data-component="decision-actions" data-role-only="admin">
+    <div class="bottom-action-bar bottom-action-bar--fixed decision-bar" data-component="decision-actions" data-role-only="admin" role="group" aria-label="검수 판정">
+      <button type="button" class="btn button-outline" data-component="button-outline" popovertarget="reject-sheet">반려</button>
+      <button type="button" class="btn button-pill-soft" data-component="button-pill-soft" aria-expanded="true" aria-controls="revision-comment">수정 요청</button>
+      <button type="button" class="btn button-primary" data-component="button-primary" disabled aria-describedby="checklist-hint">승인</button>
+    </div>
+    <div id="reject-sheet" class="bottom-sheet reject-sheet" popover data-component="bottom-sheet" role="dialog" aria-label="반려 확인">
+      <span class="sheet-grabber"></span>
+      <div class="stack-8">
+        <p class="text-heading-4">이 자산을 반려할까요?</p>
+        <p class="text-body-sm text-muted">반려하면 제출자에게 결과가 전달되고 다음 검수 대기 건이 열려요.</p>
+      </div>
+      <div class="button-pair">
+        <button type="button" class="btn button-outline" data-component="button-outline" popovertarget="reject-sheet" popovertargetaction="hide">취소</button>
+        <button type="button" class="btn button-primary" data-component="button-primary">반려하기</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>
