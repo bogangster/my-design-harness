@@ -1,0 +1,11 @@
+{
+  "id": "home",
+  "gates": {
+    "G-ref": {
+      "pass": true,
+      "violations": []
+    }
+  },
+  "updated_at": "2026-09-29T13:42:14.934Z",
+  "pass": true
+}

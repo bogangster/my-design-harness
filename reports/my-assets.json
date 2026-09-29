@@ -1,0 +1,11 @@
+{
+  "id": "my-assets",
+  "gates": {
+    "G-ref": {
+      "pass": true,
+      "violations": []
+    }
+  },
+  "updated_at": "2026-09-29T13:42:15.015Z",
+  "pass": true
+}

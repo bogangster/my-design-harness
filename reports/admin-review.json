@@ -1,0 +1,11 @@
+{
+  "id": "admin-review",
+  "gates": {
+    "G-ref": {
+      "pass": true,
+      "violations": []
+    }
+  },
+  "updated_at": "2026-09-29T13:42:15.096Z",
+  "pass": true
+}
