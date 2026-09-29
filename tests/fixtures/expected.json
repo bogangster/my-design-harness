@@ -1,0 +1,59 @@
+{
+  "screens": {
+    "good.html": [],
+    "bad-color.html": [
+      "G-token"
+    ],
+    "bad-shadow.html": [
+      "G-token"
+    ],
+    "bad-accent-cta.html": [
+      "G-token"
+    ],
+    "bad-n1.html": [
+      "G-N1"
+    ],
+    "bad-n2.html": [
+      "G-N2"
+    ],
+    "bad-g1.html": [
+      "G1"
+    ],
+    "bad-field.html": [
+      "G-field"
+    ],
+    "bad-unmarked.html": [
+      "G-token"
+    ],
+    "bad-n2-untagged.html": [
+      "G-N2"
+    ],
+    "bad-accent-short-hex.html": [
+      "G-token"
+    ],
+    "bad-accent-alias.html": [
+      "G-token"
+    ],
+    "bad-shadow-grouped.html": [
+      "G-token"
+    ],
+    "bad-link-query.html": [
+      "G-token"
+    ],
+    "bad-link-missing.html": [
+      "G-token"
+    ]
+  },
+  "refs": {
+    "refs-good.md": [],
+    "refs-bad.md": [
+      "G-ref"
+    ]
+  },
+  "specs": {
+    "spec.md": [],
+    "spec-bad.md": [
+      "G-spec"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "source": ["docs/design.md", "docs/story-service.md", "docs/r4-artifacts.md", "docs/r5-gates.md"],
+
+  "screens": ["home", "free-library", "member-library", "skill-library", "mission-detail", "submit", "my-learning", "my-assets", "asset-detail", "admin-review"],
+  "concept_screens": ["home", "my-assets", "admin-review"],
+
+  "color_allow": ["#141414", "#262626", "#ffffff", "#f3f3f3", "#f0f0f0", "#e0e0e0", "#707070", "#adadad", "#0066ff", "rgba(115,115,115,0.56)"],
+  "accent": {
+    "hex": "#0066ff",
+    "vars": ["--color-accent"],
+    "components": ["badge-popular", "savings-callout"],
+    "max_per_screen": 2,
+    "forbidden_components": ["button-primary"]
+  },
+  "radius_allow_px": [0, 16, 24, 9999],
+  "radius_allow_pct": [30, 50],
+  "font_size_allow_px": [32, 28, 24, 20, 18, 17, 15, 13, 12],
+  "font_weight_allow": [300, 400, 600, 700],
+  "heading_line_height": [1.3, 1.35],
+  "spacing_allow_px": [0, 4, 8, 12, 16, 24, 32, 48, 64],
+  "shadow": { "allowed_components": ["segmented-control-active"] },
+
+  "marking": {
+    "section_attr": "data-ref",
+    "control_tags": ["button", "input", "select", "textarea"],
+    "control_attr": "data-component"
+  },
+
+  "N1": { "texts": ["판매 신청"], "values": ["sale_requested"], "allowed_roles": ["seller", "admin"] },
+  "N2": { "field": "Asset.visibility", "private_value": "private", "private_label": "비공개", "option_values": ["private", "member_only", "sale_requested"] },
+
+  "status_enum": {
+    "submission": ["작성 중", "제출 완료"],
+    "asset": ["임시저장", "검수 대기", "수정 요청", "승인됨", "반려"]
+  },
+
+  "G_ref": { "refs_min": 5, "distinct_apps_min": 5, "url_must_contain": "uibowl" },
+  "G1": { "max_share_one_ref": 0.4, "refs_used_min": 3, "own_value": "own" },
+
+  "retries_max": 3,
+  "boundary": { "researcher": "refs", "planner": "specs", "system-builder": "system", "screen-builder": "screens" }
+}
