@@ -1,0 +1,6 @@
+approved_at: 2026-09-29
+approved_by: 사람 (채팅 "승인")
+mode: concept
+screens: home, my-assets, admin-review
+gates: G-ref · G-spec · G-token · G-N1 · G-N2 · G1 · G-field 전부 pass, 360px 가로 스크롤 없음
+note: 이 파일이 있으면 system/ 은 잠김. 수정은 사람 승인 필요.
